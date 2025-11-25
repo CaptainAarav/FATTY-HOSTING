@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  fatty-hosting-web:
+    build: .
+    container_name: fatty-hosting
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
