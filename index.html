@@ -17,6 +17,15 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#pricing">Pricing</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li class="auth-buttons" id="authButtons">
+                    <button class="btn btn-small btn-secondary" id="loginBtn">Login</button>
+                    <button class="btn btn-small btn-primary" id="registerBtn">Sign Up</button>
+                </li>
+                <li class="user-menu" id="userMenu" style="display: none;">
+                    <span id="userName"></span>
+                    <button class="btn btn-small btn-secondary" id="dashboardBtn">Dashboard</button>
+                    <button class="btn btn-small btn-secondary" id="logoutBtn">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -110,6 +119,74 @@
             <p>&copy; 2025 FATTY HOSTING. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login to Your Account</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="modal-footer">Don't have an account? <a href="#" id="switchToRegister">Sign up</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Your Account</h2>
+            <form id="registerForm">
+                <input type="text" id="registerName" placeholder="Full Name" required>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Password (min 6 characters)" required>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <p class="modal-footer">Already have an account? <a href="#" id="switchToLogin">Login</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Server Request Modal -->
+    <div id="serverRequestModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Request Your Free Server</h2>
+            <form id="serverRequestForm">
+                <label for="serverName">Server Name</label>
+                <input type="text" id="serverName" placeholder="e.g., MyAwesomeServer" required minlength="3" maxlength="50">
+
+                <label for="playerCount">Expected Number of Players</label>
+                <input type="number" id="playerCount" placeholder="e.g., 10" required min="1" max="100">
+
+                <label for="ampUsername">AMP Panel Username</label>
+                <input type="text" id="ampUsername" placeholder="Choose a username for AMP" required minlength="3" maxlength="30">
+
+                <label for="ampPassword">AMP Panel Password</label>
+                <input type="password" id="ampPassword" placeholder="Choose a secure password" required minlength="6">
+
+                <div class="info-box">
+                    <p><strong>Note:</strong> After submitting your request, we'll create your AMP account and send you an email with access details to amp.fattysmp.com</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2>Your Dashboard</h2>
+            <div id="dashboardContent">
+                <h3>Your Server Requests</h3>
+                <div id="requestsList"></div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
