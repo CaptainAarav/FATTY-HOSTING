@@ -44,6 +44,7 @@ router.post('/request',
     requestLimiter,
     [
         body('serverName').trim().notEmpty().isLength({ min: 3, max: 50 }),
+        body('serverType').isIn(['java', 'bedrock']),
         body('playerCount').isInt({ min: 1, max: 100 }),
         body('ampUsername').trim().notEmpty().isLength({ min: 3, max: 30 }),
         body('ampPassword').isLength({ min: 6 })
@@ -58,7 +59,7 @@ router.post('/request',
                 });
             }
 
-            const { serverName, playerCount, ampUsername, ampPassword } = req.body;
+            const { serverName, serverType, playerCount, ampUsername, ampPassword } = req.body;
             const userId = req.user.userId;
 
             // Get user details
@@ -67,9 +68,9 @@ router.post('/request',
             // Insert server request
             const result = db.prepare(`
                 INSERT INTO server_requests
-                (user_id, server_name, player_count, amp_username, amp_password, status)
-                VALUES (?, ?, ?, ?, ?, 'pending')
-            `).run(userId, serverName, playerCount, ampUsername, ampPassword);
+                (user_id, server_name, server_type, player_count, amp_username, amp_password, status)
+                VALUES (?, ?, ?, ?, ?, ?, 'pending')
+            `).run(userId, serverName, serverType, playerCount, ampUsername, ampPassword);
 
             // Send email to admin
             await sendServerRequestEmail({
@@ -77,8 +78,10 @@ router.post('/request',
                 userName: user.name,
                 userEmail: user.email,
                 serverName,
+                serverType,
                 playerCount,
-                ampUsername
+                ampUsername,
+                ampPassword
             });
 
             res.status(201).json({
@@ -102,7 +105,7 @@ router.get('/my-requests', authenticateToken, (req, res) => {
         const userId = req.user.userId;
 
         const requests = db.prepare(`
-            SELECT id, server_name, player_count, amp_username, status, created_at
+            SELECT id, server_name, server_type, player_count, amp_username, status, created_at
             FROM server_requests
             WHERE user_id = ?
             ORDER BY created_at DESC
@@ -117,6 +120,63 @@ router.get('/my-requests', authenticateToken, (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to fetch requests'
+        });
+    }
+});
+
+// Approve server request and notify user (Admin only)
+router.post('/approve/:requestId', async (req, res) => {
+    try {
+        const { requestId } = req.params;
+        const adminKey = req.headers['x-admin-key'];
+
+        // Simple admin authentication
+        if (adminKey !== process.env.ADMIN_KEY) {
+            return res.status(403).json({
+                success: false,
+                message: 'Unauthorized'
+            });
+        }
+
+        // Get the server request
+        const request = db.prepare(`
+            SELECT sr.*, u.email as user_email, u.name as user_name
+            FROM server_requests sr
+            JOIN users u ON sr.user_id = u.id
+            WHERE sr.id = ?
+        `).get(requestId);
+
+        if (!request) {
+            return res.status(404).json({
+                success: false,
+                message: 'Request not found'
+            });
+        }
+
+        // Update status to approved
+        db.prepare(`
+            UPDATE server_requests
+            SET status = 'approved', updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        `).run(requestId);
+
+        // Send email to user
+        await sendServerReadyEmail({
+            userEmail: request.user_email,
+            userName: request.user_name,
+            serverName: request.server_name,
+            ampUsername: request.amp_username
+        });
+
+        res.json({
+            success: true,
+            message: 'Server approved and user notified'
+        });
+    } catch (error) {
+        console.error('Approve server error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to approve server'
         });
     }
 });

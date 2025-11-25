@@ -256,6 +256,7 @@ async function handleServerRequest(e) {
     e.preventDefault();
 
     const serverName = document.getElementById('serverName').value;
+    const serverType = document.getElementById('serverType').value;
     const playerCount = parseInt(document.getElementById('playerCount').value);
     const ampUsername = document.getElementById('ampUsername').value;
     const ampPassword = document.getElementById('ampPassword').value;
@@ -269,6 +270,7 @@ async function handleServerRequest(e) {
             },
             body: JSON.stringify({
                 serverName,
+                serverType,
                 playerCount,
                 ampUsername,
                 ampPassword

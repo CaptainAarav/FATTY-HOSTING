@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 // Send server request notification to admin
 async function sendServerRequestEmail(requestData) {
-    const { requestId, userName, userEmail, serverName, playerCount, ampUsername } = requestData;
+    const { requestId, userName, userEmail, serverName, serverType, playerCount, ampUsername, ampPassword } = requestData;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -19,20 +19,37 @@ async function sendServerRequestEmail(requestData) {
         subject: `New FATTY HOSTING Server Request #${requestId}`,
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #ff9500;">New Server Hosting Request</h2>
-                <p>A new server hosting request has been submitted:</p>
-
-                <div style="background-color: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3 style="margin-top: 0;">Request Details</h3>
-                    <p><strong>Request ID:</strong> #${requestId}</p>
-                    <p><strong>User Name:</strong> ${userName}</p>
-                    <p><strong>User Email:</strong> ${userEmail}</p>
-                    <p><strong>Server Name:</strong> ${serverName}</p>
-                    <p><strong>Expected Players:</strong> ${playerCount}</p>
-                    <p><strong>AMP Username:</strong> ${ampUsername}</p>
+                <div style="background: linear-gradient(135deg, #ff9500 0%, #ffd000 100%); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
+                    <h2 style="color: #0f0f0f; margin: 0;">🎮 New Server Hosting Request</h2>
                 </div>
 
-                <p style="color: #666;">Please create the AMP account and notify the user when ready.</p>
+                <div style="background-color: #f9f9f9; padding: 30px;">
+                    <p>A new server hosting request has been submitted!</p>
+
+                    <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ff9500;">
+                        <h3 style="margin-top: 0; color: #ff9500;">Request #${requestId}</h3>
+                        <p><strong>User Name:</strong> ${userName}</p>
+                        <p><strong>User Email:</strong> ${userEmail}</p>
+                        <p><strong>Server Name:</strong> ${serverName}</p>
+                        <p><strong>Server Type:</strong> ${serverType === 'java' ? 'Java Edition' : 'Bedrock Edition'}</p>
+                        <p><strong>Expected Players:</strong> ${playerCount}</p>
+                    </div>
+
+                    <div style="background-color: #fff3e6; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #ff9500;">
+                        <h3 style="margin-top: 0; color: #ff9500;">🔐 AMP Account Credentials</h3>
+                        <p><strong>Username:</strong> ${ampUsername}</p>
+                        <p><strong>Password:</strong> <code style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px; font-family: monospace;">${ampPassword}</code></p>
+                    </div>
+
+                    <div style="background-color: #e6f7ff; padding: 15px; border-radius: 8px; border-left: 4px solid #0066cc;">
+                        <p style="margin: 0; color: #0066cc;"><strong>⚡ Quick Action:</strong></p>
+                        <p style="margin: 5px 0 0 0;">To approve this request: <code>POST /api/servers/approve/${requestId}</code></p>
+                    </div>
+                </div>
+
+                <div style="background-color: #1a1a1a; padding: 15px; text-align: center; border-radius: 0 0 10px 10px;">
+                    <p style="color: #b0b0b0; margin: 0; font-size: 12px;">FATTY HOSTING Admin Panel</p>
+                </div>
             </div>
         `
     };

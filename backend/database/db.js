@@ -23,6 +23,7 @@ function initDatabase() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
             server_name TEXT NOT NULL,
+            server_type TEXT DEFAULT 'java',
             player_count INTEGER NOT NULL,
             amp_username TEXT NOT NULL,
             amp_password TEXT NOT NULL,
@@ -32,6 +33,13 @@ function initDatabase() {
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     `);
+
+    // Add server_type column if it doesn't exist (for existing databases)
+    try {
+        db.exec(`ALTER TABLE server_requests ADD COLUMN server_type TEXT DEFAULT 'java'`);
+    } catch (error) {
+        // Column already exists, ignore error
+    }
 
     console.log('Database initialized successfully');
 }

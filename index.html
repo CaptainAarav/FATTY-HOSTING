@@ -158,6 +158,12 @@
                 <label for="serverName">Server Name</label>
                 <input type="text" id="serverName" placeholder="e.g., MyAwesomeServer" required minlength="3" maxlength="50">
 
+                <label for="serverType">Server Type</label>
+                <select id="serverType" required>
+                    <option value="java">Java Edition</option>
+                    <option value="bedrock">Bedrock Edition</option>
+                </select>
+
                 <label for="playerCount">Expected Number of Players</label>
                 <input type="number" id="playerCount" placeholder="e.g., 10" required min="1" max="100">
 
