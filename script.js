@@ -118,14 +118,14 @@ function setupEventListeners() {
     // Close modals
     document.querySelectorAll('.close').forEach(closeBtn => {
         closeBtn.addEventListener('click', function() {
-            this.closest('.modal').style.display = 'none';
+            this.closest('.modal').classList.remove('modal-active');
         });
     });
 
     window.addEventListener('click', (e) => {
         Object.values(modals).forEach(modal => {
             if (e.target === modal) {
-                modal.style.display = 'none';
+                modal.classList.remove('modal-active');
             }
         });
     });
