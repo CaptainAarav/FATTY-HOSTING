@@ -364,13 +364,13 @@ function updateUIForLoggedOut() {
 // Modal Management
 function openModal(modalName) {
     if (modals[modalName]) {
-        modals[modalName].style.display = 'block';
+        modals[modalName].classList.add('modal-active');
     }
 }
 
 function closeModal(modalName) {
     if (modals[modalName]) {
-        modals[modalName].style.display = 'none';
+        modals[modalName].classList.remove('modal-active');
     }
 }
 
